@@ -1,0 +1,2 @@
+# devops-argocd
+ArgoCD Applications
