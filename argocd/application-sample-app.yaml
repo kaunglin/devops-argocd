@@ -1,0 +1,27 @@
+# Argo CD Application: deploy sample-app from this Git repo.
+# 1. Replace REPO_URL with your Git repo URL (e.g. https://github.com/your-org/devops-argocd.git).
+# 2. Apply: kubectl apply -f argocd/application-sample-app.yaml
+#    (or from repo root: kubectl apply -f argocd/application-sample-app.yaml)
+# 3. In Argo CD UI the app "sample-app" will appear and sync from homelab-apps/sample-app.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_ORG/devops-argocd.git  # replace with your repo URL
+    path: homelab-apps/sample-app
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sample-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
