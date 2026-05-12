@@ -13,7 +13,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR_ORG/devops-argocd.git  # replace with your repo URL
+    repoURL: git@github.com:kaunglin/devops-argocd.git  # replace with your repo URL
     path: homelab-apps/sample-app
     targetRevision: HEAD
   destination:
