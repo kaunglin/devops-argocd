@@ -1,6 +1,12 @@
+# The namespace holds db-secret and backend-secret, which are deliberately not
+# in Git. Without Delete=false, `argocd app delete shop` would delete the
+# namespace and destroy both, and the app could not be recreated without
+# hand-rebuilding them from secrets.example.yaml.
 apiVersion: v1
 kind: Namespace
 metadata:
   name: shop
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
   labels:
     app.kubernetes.io/name: shop

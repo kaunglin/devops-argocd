@@ -10,10 +10,12 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   annotations:
-    # Never let Argo CD delete this claim, even when the Application is
-    # pruned or deleted with its cascade finalizer. Removing the data is a
-    # deliberate act, not a side effect of removing the app.
-    argocd.argoproj.io/sync-options: Prune=false
+    # Prune=false  -> not removed when it disappears from Git.
+    # Delete=false  -> not removed when the Application itself is deleted with
+    #                  its cascade finalizer. Both are needed: Prune alone does
+    #                  not survive an `argocd app delete`. Destroying the
+    #                  database must be a deliberate act, never a side effect.
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
   name: db-pvc
   namespace: shop
 spec:
