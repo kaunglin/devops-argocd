@@ -5,6 +5,7 @@ Git repo for Argo CD applications targeting the homelab Kubernetes cluster (kind
 ## Repo layout
 
 - **`homelab-apps/sample-app/`** – Sample app deployed by Argo CD (Namespace, Deployment, Service, Ingress).
+- **`homelab-apps/shop/`** – Three-tier app (frontend + backend + Postgres/pgvector) at `legendbits.shop.local`. Requires Secrets created out-of-band; see its README.
 - **`argocd/`** – Argo CD `Application` manifests that point at this repo and the app paths.
 
 ## sample-app

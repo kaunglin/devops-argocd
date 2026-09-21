@@ -1,0 +1,29 @@
+# Argo CD Application: deploy the shop app from this Git repo.
+#
+# Prerequisite: the db-secret and backend-secret Secrets must exist in the
+# `shop` namespace first — they are not in Git. See
+# homelab-apps/shop/secrets.example.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shop
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:kaunglin/devops-argocd.git
+    path: homelab-apps/shop
+    targetRevision: HEAD
+    directory:
+      exclude: secrets.example.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: shop
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

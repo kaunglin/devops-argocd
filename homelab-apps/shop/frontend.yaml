@@ -1,0 +1,40 @@
+# frontend — extracted from the live cluster on 2026-09-21.
+# Running digest at extraction time:
+#   kaunglin/shop-frontend@sha256:7ff064e3bb835e12cc21a5c57851928f5cecb7b98c71f758c92121fb848b091a
+# Replace the :latest tag with an immutable tag once CI publishes one.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - image: kaunglin/shop-frontend:latest
+        imagePullPolicy: Always
+        name: frontend
+        ports:
+        - containerPort: 80
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: shop
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: frontend
+  type: ClusterIP

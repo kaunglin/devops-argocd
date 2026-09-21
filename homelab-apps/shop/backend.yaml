@@ -1,0 +1,46 @@
+# backend — extracted from the live cluster on 2026-09-21.
+# Running digest at extraction time:
+#   kaunglin/shop-backend@sha256:d27e1fe6109ec52447de77df49cac4474c14c07c66a2a3cac97376af3784dc97
+# Replace the :latest tag with an immutable tag once CI publishes one.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - env:
+        - name: CORS_ORIGINS
+          value: http://legendbits.shop.local
+        envFrom:
+        - secretRef:
+            name: backend-secret
+        image: kaunglin/shop-backend:latest
+        imagePullPolicy: Always
+        name: backend
+        ports:
+        - containerPort: 8000
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: shop
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: backend
+  type: ClusterIP
