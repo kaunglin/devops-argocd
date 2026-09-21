@@ -1,15 +1,19 @@
 # postgres + its PersistentVolumeClaim.
 # Running digest at extraction time:
 #   pgvector/pgvector@sha256:131dcf7ff6a900545df8e7e092c270aa8c6db2f2c818e408cb45ec21316b74e6
-# NOTE: the 'standard' (local-path) StorageClass is node-bound with a Delete
-# reclaim policy — deleting this PVC destroys the data.
+# NOTE: the 'standard' (local-path) StorageClass is node-bound. The PV for this
+# claim has been patched to a Retain reclaim policy so deleting the PVC leaves
+# the data on disk, and the claim carries Prune=false so Argo CD will not
+# delete it when the Application is removed. Schema and the product catalogue
+# are rebuilt from initdb-configmap.yaml whenever the volume is empty.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   annotations:
-    volume.kubernetes.io/selected-node: homelab-worker2
-  finalizers:
-  - kubernetes.io/pvc-protection
+    # Never let Argo CD delete this claim, even when the Application is
+    # pruned or deleted with its cascade finalizer. Removing the data is a
+    # deliberate act, not a side effect of removing the app.
+    argocd.argoproj.io/sync-options: Prune=false
   name: db-pvc
   namespace: shop
 spec:
@@ -48,10 +52,16 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: data
+        # Runs only when PGDATA is empty; ignored on an existing volume.
+        - mountPath: /docker-entrypoint-initdb.d
+          name: initdb
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: db-pvc
+      - name: initdb
+        configMap:
+          name: shop-initdb
 ---
 apiVersion: v1
 kind: Service
