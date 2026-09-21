@@ -13,7 +13,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:kaunglin/devops-argocd.git
+    repoURL: https://github.com/kaunglin/devops-argocd.git
     path: homelab-apps/shop
     targetRevision: HEAD
     directory:
