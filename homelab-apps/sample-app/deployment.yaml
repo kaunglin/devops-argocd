@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: sample-app
-          image: localhost:5001/sample-app:af259ca
+          image: localhost:5001/sample-app:25fab56
           ports:
             - containerPort: 80
