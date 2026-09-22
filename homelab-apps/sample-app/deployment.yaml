@@ -4,7 +4,7 @@ metadata:
   name: sample-app
   namespace: sample-app
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: sample-app
@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: sample-app
-          image: nginx:1.25
+          image: localhost:5001/sample-app:af259ca
           ports:
             - containerPort: 80
